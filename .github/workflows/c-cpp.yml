@@ -1,19 +1,81 @@
-name: C/C++ CI
+name: Build binaries
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push,pull_request,workflow_dispatch]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
+  all-build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
     steps:
-    - uses: actions/checkout@v4
-    - name: compilation
-      run: gcc ./edit.c -o edit
-#    - name: run
-#      run: ./edit
+    - name: checkout
+      uses: actions/checkout@v4
+    - name: Windows compile
+      run: gcc ./edit.c -o edit.exe
+      if: ${{ contains(matrix.os, 'windows') }}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: my-artifact
+        path: edit.exe
+        overwrite: true
+      if: ${{ contains(matrix.os, 'windows') }}
+
+    # - name: Windows import Z80-support.h @simonowen
+    #   run: C:\msys64\usr\bin\wget.exe --directory-prefix=sources/ https://raw.githubusercontent.com/simonowen/tilemap/master/Z80-support.h
+    #   if: ${{ contains(matrix.os, 'windows') }}
+    # - name: Linux import Z80-support.h @simonowen
+    #   uses: wei/wget@v1
+    #   with:
+    #     args: --directory-prefix=sources/ https://raw.githubusercontent.com/simonowen/tilemap/master/Z80-support.h
+    #   if: ${{ contains(matrix.os, 'ubuntu') }}
+
+    # - name: Windows import Z80h @redcode
+    #   run: C:\msys64\usr\bin\wget.exe --directory-prefix=sources/ https://raw.githubusercontent.com/redcode/Z80/master/API/emulation/CPU/Z80.h
+    #   if: ${{ contains(matrix.os, 'windows') }}
+    # - name: Linux import Z80.h @redcode
+    #   uses: wei/wget@v1
+    #   with:
+    #     args: --directory-prefix=sources/ https://raw.githubusercontent.com/redcode/Z80/master/API/emulation/CPU/Z80.h
+    #   if: ${{ contains(matrix.os, 'ubuntu') }}
+
+    # - name: Windows import Z80.c @redcode
+    #   run: C:\msys64\usr\bin\wget.exe --directory-prefix=sources/ https://raw.githubusercontent.com/redcode/Z80/master/sources/Z80.c
+    #   if: ${{ contains(matrix.os, 'windows') }}
+    # - name: Linux import Z80.c @redcode
+    #   uses: wei/wget@v1
+    #   with:
+    #     args: --directory-prefix=sources/ https://raw.githubusercontent.com/redcode/Z80/master/sources/Z80.c
+    #   if: ${{ contains(matrix.os, 'ubuntu') }}
+
+    # - name: Windows Compile & Link
+    #   working-directory: ./sources
+    #   run: |
+    #     g++ -c main.cpp -o main.o -std=c++17 -D CPU_Z80_USE_LOCAL_HEADER -D CPU_Z80_STATIC -D 'CPU_Z80_DEPENDENCIES_H=\"Z80-support.h\"' -D CPU_Z80_HIDE_ABI -lstc++fs
+    #     gcc -c Z80.c -o Z80.o -D CPU_Z80_USE_LOCAL_HEADER -D CPU_Z80_STATIC -D 'CPU_Z80_DEPENDENCIES_H=\"Z80-support.h\"' -D CPU_Z80_HIDE_ABI
+    #     g++ main.o Z80.o -o cpm -static -static-libgcc -static-libstdc++ -lstc++fs
+    #   if: ${{ contains(matrix.os, 'windows') }}
+      
+    # - name: Linux Compile & Link
+    #   working-directory: ./sources
+    #   run: |
+    #     sudo apt-get update
+    #     sudo apt install gcc-10 gcc-10-base gcc-10-doc g++-10 libstdc++-10-dev libstdc++-10-doc
+    #     g++ -c main.cpp -o main.o -std=c++17 -D CPU_Z80_USE_LOCAL_HEADER -D CPU_Z80_STATIC -D CPU_Z80_DEPENDENCIES_H=\"Z80-support.h\" -D CPU_Z80_HIDE_ABI -lstc++fs
+    #     gcc -c Z80.c -o Z80.o -D CPU_Z80_USE_LOCAL_HEADER -D CPU_Z80_STATIC -D CPU_Z80_DEPENDENCIES_H=\"Z80-support.h\" -D CPU_Z80_HIDE_ABI
+    #     g++ main.o Z80.o -o cpm -static -static-libgcc -static-libstdc++ -lstc++fs
+    #   if: ${{ contains(matrix.os, 'ubuntu') }}
+
+    # - name: Windows Upload package
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: cpm-windows-x64.exe
+    #     path: ./sources/cpm.exe
+    #   if: ${{ contains(matrix.os, 'windows') }}
+      
+    # - name: Linux Upload package
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: cpm-ubuntu-x64
+    #     path: ./sources/cpm
+    #   if: ${{ contains(matrix.os, 'ubuntu') }}
