@@ -13,5 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: compil
-      run: gcc edit.c -o edit
+    - name: compilation
+      run: gcc ./edit.c -o edit
+    - name: run
+      run: ./edit
