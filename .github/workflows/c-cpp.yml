@@ -15,5 +15,5 @@ jobs:
     - uses: actions/checkout@v4
     - name: compilation
       run: gcc ./edit.c -o edit
-    - name: run
-      run: ./edit
+#    - name: run
+#      run: ./edit
