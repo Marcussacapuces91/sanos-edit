@@ -11,9 +11,15 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v4
+
     - name: Windows compile
       run: gcc ./edit.c -o edit.exe
       if: ${{ contains(matrix.os, 'windows') }}
+
+    - name: Ubunti compile
+      run: gcc ./edit.c -o edit
+      if: ${{ contains(matrix.os, 'ubuntu') }}
+
     - uses: actions/upload-artifact@v4
       with:
         name: my-artifact
