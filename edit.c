@@ -270,9 +270,12 @@ struct editor *find_editor(struct env *env, char *filename) {
   char fn[FILENAME_MAX];
   struct editor *ed = env->current;
   struct editor *start = ed;
-  
-  if (!realpath(filename, fn)) strcpy(fn, filename);
 
+#ifdef __windows__  
+  if (!_fullpath(filename, fn, FILENAME_MAX)) strcpy(fn, filename);
+#elif
+  if (!realpath(filename, fn)) strcpy(fn, filename);
+#endif
   do {
     if (strcmp(fn, ed->filename) == 0) return ed;
     ed = ed->next;
