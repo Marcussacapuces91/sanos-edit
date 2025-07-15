@@ -13,7 +13,9 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Windows compile
-      run: gcc ./edit.c -o edit.exe
+      run: |
+        echo | gcc -dM -E -
+        gcc ./edit.c -o edit.exe
       if: ${{ contains(matrix.os, 'windows') }}
 
     - name: Ubuntu compile
