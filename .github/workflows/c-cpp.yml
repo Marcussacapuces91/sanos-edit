@@ -14,7 +14,7 @@ jobs:
 
     - name: Windows compile
       run: |
-        echo | gcc -dM -E -
+        echo | gcc -dM -E - < /dev/null
         gcc ./edit.c -o edit.exe
       if: ${{ contains(matrix.os, 'windows') }}
 
