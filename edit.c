@@ -273,7 +273,7 @@ struct editor *find_editor(struct env *env, char *filename) {
 
 #ifdef __windows__  
   if (!_fullpath(filename, fn, FILENAME_MAX)) strcpy(fn, filename);
-#elif
+#else
   if (!realpath(filename, fn)) strcpy(fn, filename);
 #endif
   do {
