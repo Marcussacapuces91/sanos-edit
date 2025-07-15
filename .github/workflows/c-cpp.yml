@@ -13,7 +13,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Windows compile
-      run: echo | gcc -dM -E - | sort
+      run: gcc --version -dM -E - | sort
 #      - gcc ./edit.c -o edit.exe
       if: ${{ contains(matrix.os, 'windows') }}
 
