@@ -16,7 +16,7 @@ jobs:
       run: gcc ./edit.c -o edit.exe
       if: ${{ contains(matrix.os, 'windows') }}
 
-    - name: Ubunti compile
+    - name: Ubuntu compile
       run: gcc ./edit.c -o edit
       if: ${{ contains(matrix.os, 'ubuntu') }}
 
